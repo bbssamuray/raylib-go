@@ -37,6 +37,7 @@ package raylib
 
 import (
 	"image"
+	"image/color"
 	"io"
 	"runtime"
 	"unsafe"
@@ -1096,6 +1097,21 @@ func NewImageFromImage(img image.Image) *Image {
 			color := img.At(x, y)
 			r, g, b, a := color.RGBA()
 			pixels[x+y*size.Y] = NewColor(uint8(r), uint8(g), uint8(b), uint8(a))
+		}
+	}
+
+	return LoadImageEx(pixels, int32(size.X), int32(size.Y))
+}
+
+func NewImageFromImageJpeg(img image.Image) *Image {
+	size := img.Bounds().Size()
+	pixels := make([]Color, size.X*size.Y)
+
+	for y := 0; y < size.Y; y++ {
+		for x := 0; x < size.X; x++ {
+			c := color.RGBAModel.Convert(img.At(x, y))
+			r, g, b, a := c.RGBA()
+			pixels[x+y*size.X] = raylib.NewColor(uint8(r), uint8(g), uint8(b), uint8(a))
 		}
 	}
 
